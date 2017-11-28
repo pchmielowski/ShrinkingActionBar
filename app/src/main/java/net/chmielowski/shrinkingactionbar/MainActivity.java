@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ViewGroup layout;
+    private ViewGroup contentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        layout = findViewById(R.id.layout);
+        contentLayout = findViewById(R.id.layout);
         final AppBarLayout appBarLayout = findViewById(R.id.appBar);
         final View bottom = findViewById(R.id.bottom);
         final View container = findViewById(R.id.main_activity_container);
@@ -63,13 +63,13 @@ public class MainActivity extends AppCompatActivity {
                 appBarLayout.post(new Runnable() {
                     @Override
                     public void run() {
-                        adjustHeight(layout, screenHeight - appBarLayout.getBottom());
+                        adjustHeight(contentLayout, screenHeight - appBarLayout.getBottom());
                     }
                 });
                 appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
                     @Override
                     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                        adjustHeight(layout, screenHeight - appBarLayout.getBottom());
+                        adjustHeight(contentLayout, screenHeight - appBarLayout.getBottom());
                     }
                 });
             }
