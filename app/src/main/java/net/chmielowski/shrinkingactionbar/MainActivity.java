@@ -2,15 +2,14 @@ package net.chmielowski.shrinkingactionbar;
 
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,28 +24,25 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final RecyclerView recycler = findViewById(R.id.recycler);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        recycler.setAdapter(new RecyclerView.Adapter() {
+        final ViewPager pager = findViewById(R.id.layout);
+        pager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-                return new RecyclerView.ViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(android.R.layout.simple_list_item_1, parent, false)
-                ) {
-                };
+            public Fragment getItem(final int position) {
+                switch (position) {
+                    case 0:
+                        return new RecyclerFragment();
+                    case 1:
+                        return new RecyclerFragment();
+                    default:
+                        throw new RuntimeException();
+                }
             }
 
             @Override
-            public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-                ((TextView) holder.itemView.findViewById(android.R.id.text1)).setText(String.valueOf(position));
-            }
-
-            @Override
-            public int getItemCount() {
-                return 20;
+            public int getCount() {
+                return 2;
             }
         });
-
 
         contentLayout = findViewById(R.id.layout);
         final AppBarLayout appBarLayout = findViewById(R.id.appBar);
