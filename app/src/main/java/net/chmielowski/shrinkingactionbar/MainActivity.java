@@ -3,9 +3,13 @@ package net.chmielowski.shrinkingactionbar;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +21,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        final RecyclerView recycler = findViewById(R.id.recycler);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        recycler.setAdapter(new RecyclerView.Adapter() {
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+                return new RecyclerView.ViewHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(android.R.layout.simple_list_item_1, parent, false)
+                ) {
+                };
+            }
+
+            @Override
+            public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+                ((TextView) holder.itemView.findViewById(android.R.id.text1)).setText(String.valueOf(position));
+            }
+
+            @Override
+            public int getItemCount() {
+                return 20;
+            }
+        });
 
         layout = findViewById(R.id.layout);
         final AppBarLayout appBarLayout = findViewById(R.id.appBar);
