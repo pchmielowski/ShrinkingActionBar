@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -44,9 +48,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         layout = findViewById(R.id.layout);
         final AppBarLayout appBarLayout = findViewById(R.id.appBar);
-        final int screenHeight = getResources().getDisplayMetrics().heightPixels;
+        final View bottom = findViewById(R.id.bottom);
+        final ViewTreeObserver observer = bottom.getViewTreeObserver();
+        final int h = getResources().getDisplayMetrics().heightPixels - getStatusBarHeight();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                bottom.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                Log.d("pchm", "getResources().getDisplayMetrics().heightPixels = " + h + " bottom.getHeight() = " + bottom.getHeight());
+                final int screenHeight = h - bottom.getHeight();
+
+                appBarLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        adjustHeight(layout, screenHeight - appBarLayout.getBottom());
+                    }
+                });
+                appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                    @Override
+                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                        adjustHeight(layout, screenHeight - appBarLayout.getBottom());
+                    }
+                });
+            }
+
+        });
+
 
         findViewById(R.id.expand)
                 .setOnClickListener(new View.OnClickListener() {
@@ -63,19 +93,16 @@ public class MainActivity extends AppCompatActivity {
                         appBarLayout.setExpanded(false);
                     }
                 });
-        appBarLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                adjustHeight(layout, screenHeight - appBarLayout.getBottom());
-            }
-        });
+    }
 
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                adjustHeight(layout, screenHeight - appBarLayout.getBottom());
-            }
-        });
+
+    public int getStatusBarHeight() {
+        int statusBarHeight = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
+        return statusBarHeight;
     }
 
     private static void adjustHeight(final ViewGroup layout, final int newHeight) {
