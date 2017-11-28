@@ -97,12 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public int getStatusBarHeight() {
-        int statusBarHeight = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        if (resourceId == 0) {
+            return 0;
         }
-        return statusBarHeight;
+        return getResources().getDimensionPixelSize(resourceId);
     }
 
     private static void adjustHeight(final ViewGroup layout, final int newHeight) {
