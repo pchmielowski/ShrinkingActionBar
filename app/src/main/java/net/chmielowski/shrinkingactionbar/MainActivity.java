@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,14 +51,14 @@ public class MainActivity extends AppCompatActivity {
         layout = findViewById(R.id.layout);
         final AppBarLayout appBarLayout = findViewById(R.id.appBar);
         final View bottom = findViewById(R.id.bottom);
-        final ViewTreeObserver observer = bottom.getViewTreeObserver();
-        final int h = getResources().getDisplayMetrics().heightPixels - getStatusBarHeight();
+        final View container = findViewById(R.id.main_activity_container);
+        final ViewTreeObserver observer = container.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 bottom.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                Log.d("pchm", "getResources().getDisplayMetrics().heightPixels = " + h + " bottom.getHeight() = " + bottom.getHeight());
-                final int screenHeight = h - bottom.getHeight();
+
+                final int screenHeight = container.getHeight() - bottom.getHeight();
 
                 appBarLayout.post(new Runnable() {
                     @Override
@@ -95,14 +94,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
-    public int getStatusBarHeight() {
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId == 0) {
-            return 0;
-        }
-        return getResources().getDimensionPixelSize(resourceId);
-    }
 
     private static void adjustHeight(final ViewGroup layout, final int newHeight) {
         final ViewGroup.LayoutParams params = layout.getLayoutParams();
